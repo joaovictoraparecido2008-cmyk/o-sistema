@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050914">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SISTEMA">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>SISTEMA — Caçador</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Sistema início">
+        <span class="brand-mark">S</span><span>SISTEMA<span class="brand-dot">.</span></span>
+      </a>
+      <div class="side-label">JANELAS</div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="inicio"><span class="nav-icon">⌂</span> Visão geral</button>
+        <button class="nav-item" data-view="cacador"><span class="nav-icon">◈</span> Status</button>
+        <button class="nav-item" data-view="tarefas"><span class="nav-icon">✓</span> Missões</button>
+        <button class="nav-item" data-view="calendario"><span class="nav-icon">▦</span> Calendário</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="profile" data-view="cacador" title="Abrir status">
+          <div class="avatar rank-badge" id="sideRank">E</div>
+          <div><strong id="sideName">Caçador</strong><small id="sideMeta">Rank E · Nv 1</small></div>
+          <span class="profile-menu">›</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">S</span> SISTEMA<span class="brand-dot">.</span></div>
+        <div class="breadcrumb">Sistema <span>/</span> <strong id="crumb">Visão geral</strong></div>
+        <div class="top-actions">
+          <span class="today-label" id="todayLabel"></span>
+          <button class="icon-button" id="themeToggle" title="Alternar tema" aria-label="Alternar tema">☼</button>
+          <div class="avatar small rank-badge" id="topRank">E</div>
+        </div>
+      </header>
+
+      <!-- VISÃO GERAL -->
+      <section class="page" id="view-inicio">
+        <div class="welcome-row">
+          <div>
+            <div class="eyebrow">[ SISTEMA ] JOGADOR DETECTADO</div>
+            <h1>Olá, <span id="greetName">Caçador</span>! <span class="wave">✦</span></h1>
+            <p class="muted">Complete missões, ganhe XP e suba de rank.</p>
+          </div>
+          <button class="primary-button" id="quickAdd">＋ Nova missão</button>
+        </div>
+
+        <section class="sys-window hunter-card" id="hunterCard">
+          <div class="rank-emblem" id="homeRank">E</div>
+          <div class="hunter-info">
+            <div class="eyebrow">CAÇADOR</div>
+            <h2 id="homeHunterName">—</h2>
+            <div class="hunter-meta"><span id="homeRankName">Rank E · Novato</span><span class="lvl-chip" id="homeLevel">Nv 1</span></div>
+            <div class="xp-bar"><i id="homeXpBar"></i></div>
+            <div class="xp-labels"><span id="homeXpText">0 / 100 XP</span><span id="homeNextRank"></span></div>
+          </div>
+        </section>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Pendentes hoje</span><span class="stat-icon violet">↗</span></div>
+            <strong id="pendingCount">0</strong><small>Aguardando o caçador</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Concluídas hoje</span><span class="stat-icon green">✓</span></div>
+            <strong id="doneCount">0</strong><small>Cada uma rende XP</small>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Compromissos no mês</span><span class="stat-icon blue">▦</span></div>
+            <strong id="eventCount">0</strong><small>Eventos no calendário</small>
+          </article>
+        </div>
+
+        <section class="sys-window daily" id="dailyQuest">
+          <div class="sys-title">[ MISSÃO DIÁRIA ]</div>
+          <div class="daily-row">
+            <div>
+              <strong>Complete 3 missões hoje</strong>
+              <small class="muted">Recompensa: +50 XP</small>
+            </div>
+            <span class="daily-count" id="dailyCount">0/3</span>
+          </div>
+          <div class="xp-bar thin"><i id="dailyBar"></i></div>
+          <small class="muted" id="dailyState"></small>
+        </section>
+
+        <div class="content-grid">
+          <section class="panel task-panel">
+            <div class="panel-heading">
+              <div><h2>Suas missões</h2><p class="muted">O que você vai conquistar hoje?</p></div>
+              <button class="text-button" data-go="tarefas">Ver todas <span>→</span></button>
+            </div>
+            <div id="homeTasks" class="task-list"></div>
+            <div class="empty-state" id="homeEmpty"><div class="empty-symbol">✳</div><strong>Nenhuma missão para hoje</strong><p>Novo dia, lista limpa. Adicione uma missão para ganhar XP.</p></div>
+            <div class="yesterday-note hidden" id="homeYesterday"></div>
+          </section>
+          <section class="panel mini-calendar-panel">
+            <div class="panel-heading">
+              <div><h2>Calendário</h2><p class="muted" id="miniMonth"></p></div>
+              <button class="text-button" data-go="calendario">Abrir <span>→</span></button>
+            </div>
+            <div class="mini-calendar" id="miniCalendar"></div>
+            <div class="upcoming">
+              <div class="upcoming-title">PRÓXIMOS EVENTOS</div>
+              <div id="upcomingEvents"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- STATUS DO CAÇADOR -->
+      <section class="page hidden" id="view-cacador">
+        <div class="page-heading">
+          <div><div class="eyebrow">[ STATUS ]</div><h1>Janela de Status</h1><p class="muted">Seu nome, rank, nível e atributos.</p></div>
+        </div>
+
+        <div class="status-grid">
+          <section class="sys-window status-main">
+            <div class="sys-title">[ CAÇADOR ]</div>
+            <div class="status-head">
+              <div class="rank-emblem big" id="stRank">E</div>
+              <div class="status-id">
+                <label for="hunterNameInput">Nome do caçador</label>
+                <form id="nameForm" class="name-form">
+                  <input id="hunterNameInput" maxlength="20" minlength="2" placeholder="Digite seu nome" required autocomplete="off">
+                  <button class="primary-button" type="submit">Salvar</button>
+                </form>
+                <div class="hunter-meta"><span id="stRankName">Rank E · Novato</span><span class="lvl-chip" id="stLevel">Nv 1</span></div>
+              </div>
+            </div>
+            <div class="xp-bar"><i id="stXpBar"></i></div>
+            <div class="xp-labels"><span id="stXpText"></span><span id="stNextRank"></span></div>
+
+            <div class="mini-stats">
+              <div><small>XP TOTAL</small><strong id="stXpTotal">0</strong></div>
+              <div><small>MISSÕES</small><strong id="stDone">0</strong></div>
+              <div><small>SEQUÊNCIA</small><strong id="stStreak">0 d</strong></div>
+            </div>
+          </section>
+
+          <section class="sys-window">
+            <div class="sys-title">[ ATRIBUTOS ]</div>
+            <div class="attrs" id="attrList"></div>
+            <small class="muted">Cada missão concluída aumenta o atributo escolhido.</small>
+          </section>
+
+          <section class="sys-window ladder-win">
+            <div class="sys-title">[ RANKS ]</div>
+            <div class="ladder" id="rankLadder"></div>
+          </section>
+
+          <section class="sys-window data-win">
+            <div class="sys-title">[ DADOS ]</div>
+            <p class="muted">Seu progresso fica salvo só neste aparelho. Exporte um backup para guardar ou levar para outro aparelho.</p>
+            <div class="data-actions">
+              <button class="secondary-button" id="exportBtn" type="button">⬇ Exportar progresso</button>
+              <button class="secondary-button" id="importBtn" type="button">⬆ Importar progresso</button>
+              <button class="secondary-button danger" id="resetBtn" type="button">⟲ Reiniciar caçador</button>
+            </div>
+            <input type="file" id="importFile" accept="application/json,.json" hidden>
+          </section>
+        </div>
+      </section>
+
+      <!-- MISSÕES -->
+      <section class="page hidden" id="view-tarefas">
+        <div class="page-heading">
+          <div><div class="eyebrow">QUADRO DE MISSÕES</div><h1>Missões</h1><p class="muted">A lista é do dia de hoje e recomeça vazia a cada dia. Os dias anteriores ficam salvos no calendário.</p></div>
+          <button class="primary-button" id="addTask">＋ Nova missão</button>
+        </div>
+        <div class="panel">
+          <div class="filter-row">
+            <div class="filter-tabs">
+              <button class="filter active" data-filter="todas">Todas</button>
+              <button class="filter" data-filter="pendentes">Pendentes</button>
+              <button class="filter" data-filter="concluidas">Concluídas</button>
+            </div>
+            <span class="muted count-label" id="taskSummary"></span>
+          </div>
+          <div id="allTasks" class="task-list large-list"></div>
+          <div class="empty-state" id="tasksEmpty"><div class="empty-symbol">✳</div><strong>Nenhuma missão por aqui</strong><p>Use “Nova missão” para adicionar a primeira de hoje.</p></div>
+        </div>
+        <section class="panel yesterday-panel hidden" id="yesterdayPanel">
+          <div class="panel-heading">
+            <div><h2>Ontem</h2><p class="muted" id="yesterdaySummary"></p></div>
+            <button class="text-button" id="yesterdayGo">Ver no calendário <span>→</span></button>
+          </div>
+          <div id="yesterdayTasks" class="task-list"></div>
+        </section>
+      </section>
+
+      <!-- CALENDÁRIO -->
+      <section class="page hidden" id="view-calendario">
+        <div class="page-heading">
+          <div><div class="eyebrow">SEUS PLANOS EM UM SÓ LUGAR</div><h1>Calendário</h1><p class="muted">Visualize datas importantes e adicione seus compromissos.</p></div>
+          <button class="primary-button" id="addEvent">＋ Novo evento</button>
+        </div>
+        <section class="panel calendar-panel">
+          <div class="calendar-toolbar">
+            <div class="month-control"><button class="round-button" id="prevMonth" aria-label="Mês anterior">‹</button><h2 id="calendarTitle"></h2><button class="round-button" id="nextMonth" aria-label="Próximo mês">›</button></div>
+            <button class="today-button" id="goToday">Hoje</button>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="selected-day">
+            <div>
+              <span class="eyebrow">AGENDA DO DIA</span><h3 id="selectedDateLabel"></h3>
+              <div class="day-summary" id="daySummary"></div>
+              <button class="secondary-button" id="addDayTask" type="button">＋ Missão neste dia</button>
+            </div>
+            <div class="day-content">
+              <div class="day-block-title">MISSÕES</div>
+              <div id="dayTasks" class="task-list"></div>
+              <div class="day-block-title">COMPROMISSOS</div>
+              <div id="dayEvents" class="day-events"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <footer>PROJETO PÉ NO FUTURO <span>SISTEMA<span class="brand-dot">.</span></span></footer>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navegação">
+    <button class="nav-item active" data-view="inicio"><span class="nav-icon">⌂</span>Início</button>
+    <button class="nav-item" data-view="cacador"><span class="nav-icon">◈</span>Status</button>
+    <button class="nav-item" data-view="tarefas"><span class="nav-icon">✓</span>Missões</button>
+    <button class="nav-item" data-view="calendario"><span class="nav-icon">▦</span>Agenda</button>
+  </nav>
+
+  <!-- Criar missão / evento -->
+  <div class="modal-backdrop hidden" id="modal">
+    <form class="modal" id="itemForm">
+      <button type="button" class="modal-close" id="closeModal" aria-label="Fechar">×</button>
+      <div class="eyebrow" id="modalEyebrow">NOVO ITEM</div>
+      <h2 id="modalTitle">Nova missão</h2>
+      <label for="itemName">Título</label>
+      <input id="itemName" maxlength="90" placeholder="Ex.: Estudar matemática" required>
+      <div id="taskFields">
+        <label for="itemPriority">Dificuldade da missão</label>
+        <select id="itemPriority">
+          <option value="baixa">Rank E — Fácil (+10 XP)</option>
+          <option value="normal" selected>Rank C — Normal (+25 XP)</option>
+          <option value="alta">Rank A — Difícil (+50 XP)</option>
+        </select>
+        <label for="itemAttr">Atributo que vai evoluir</label>
+        <select id="itemAttr">
+          <option value="for">Força — físico / treino</option>
+          <option value="agi">Agilidade — rotina / rapidez</option>
+          <option value="int" selected>Inteligência — estudo</option>
+          <option value="vit">Vigor — saúde / descanso</option>
+          <option value="sen">Percepção — foco / organização</option>
+        </select>
+        <label for="taskDate">Dia da missão</label>
+        <input id="taskDate" type="date">
+      </div>
+      <div id="eventFields" class="hidden">
+        <label for="itemDate">Data</label><input id="itemDate" type="date">
+        <label for="itemTime">Horário (opcional)</label><input id="itemTime" type="time">
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-button" id="cancelModal">Cancelar</button><button class="primary-button" type="submit">Salvar</button></div>
+    </form>
+  </div>
+
+  <!-- Primeiro acesso: nome do caçador -->
+  <div class="modal-backdrop hidden" id="nameModal">
+    <form class="modal sys-modal" id="welcomeForm">
+      <div class="sys-title">[ SISTEMA ]</div>
+      <h2>Jogador detectado</h2>
+      <p class="muted">Você foi escolhido para despertar como caçador. Informe seu nome para registrar no Sistema.</p>
+      <label for="welcomeName">Nome do caçador</label>
+      <input id="welcomeName" maxlength="20" minlength="2" placeholder="Ex.: Seu nome" required autocomplete="off">
+      <div class="modal-actions"><button class="primary-button" type="submit">Despertar</button></div>
+    </form>
+  </div>
+
+  <!-- Aviso de rank / nível -->
+  <div class="modal-backdrop hidden" id="rankModal">
+    <div class="modal sys-modal rankup">
+      <div class="sys-title" id="ruTag">[ NOTIFICAÇÃO ]</div>
+      <div class="rank-emblem big" id="ruEmblem">D</div>
+      <h2 id="ruTitle">RANK UP!</h2>
+      <p class="muted" id="ruText"></p>
+      <div class="modal-actions center"><button class="primary-button" id="ruClose">Continuar</button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+</body>
+</html>
