@@ -1,0 +1,9 @@
+{
+	"appId": "com.penofuturo.sistema",
+	"appName": "SISTEMA",
+	"webDir": "www",
+	"backgroundColor": "#050914",
+	"android": {
+		"backgroundColor": "#050914"
+	}
+}
